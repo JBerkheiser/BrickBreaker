@@ -13,6 +13,11 @@ def populateBricks(brickWidth, brickHeight, horizontalGap, verticalGap):
 
     return listOfBricks
 
+def collisionCheck(rect, ball):
+    if pygame.Rect.colliderect(rect, ball):
+        return True
+    return False
+
 def main():
     pygame.init()
 
@@ -35,8 +40,11 @@ def main():
         ball.update()
 
         for brick in listOfBricks:
-            if brick.getDurability() <= 0:
-                listOfBricks.pop(listOfBricks.index(brick))
+            if(collisionCheck(brick.getRect(), ball.getRect())):
+                ball.hit()
+                brick.hit()
+                if brick.getDurability() <= 0:
+                    listOfBricks.pop(listOfBricks.index(brick))
 
         ball.display(screen)
         for brick in listOfBricks:

@@ -22,6 +22,9 @@ class Ball:
             self.xFac *= -1
         if self.posy <=0 or self.posy + self.ball.get_height() >= height:
             self.yFac *= -1
+    
+    def hit(self):
+        self.yFac *= -1
 
     def getRect(self):
-        return self.ball.get_rect()
+        return self.ball.get_rect(topleft=(self.posx, self.posy))

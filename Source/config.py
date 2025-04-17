@@ -7,3 +7,4 @@ colorGreen = (255, 0, 0)
 # Bricks
 brickWidth = 64
 brickHeight = 32
+brickRectOffset = 32

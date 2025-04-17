@@ -1,6 +1,6 @@
 import pygame
 import sys
-from config import width, height
+from config import width, height, brickRectOffset
 
 class Brick:
     def __init__(self, posx, posy, image, durability):
@@ -18,7 +18,9 @@ class Brick:
         self.durability -= 1
 
     def getRect(self):
-        return self.brick.get_rect()
+        brickRect = self.brick.get_rect(topleft=(self.posx, self.posy))
+        brickRect.height -= brickRectOffset
+        return brickRect
     
     def getDurability(self):
         return self.durability
