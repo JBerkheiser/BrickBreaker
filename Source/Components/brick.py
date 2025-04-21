@@ -3,10 +3,12 @@ import sys
 from config import width, height, brickRectOffset
 
 class Brick:
-    def __init__(self, posx, posy, image, durability):
+    def __init__(self, posx, posy, image, durability, width, height):
         self.posx, self.posy = posx, posy
         self.durability = durability
         self.image = image
+        self.width = width
+        self.height = height
 
         self.brick = pygame.image.load(self.image)
     
@@ -16,6 +18,10 @@ class Brick:
 
     def hit(self):
         self.durability -= 1
+        if(self.durability == 2):
+            self.image = "Images/Brick.gif"
+        if(self.durability == 1):
+            self.image = "Images/BrokenBrick.gif"
 
     def getRect(self):
         brickRect = self.brick.get_rect(topleft=(self.posx, self.posy))

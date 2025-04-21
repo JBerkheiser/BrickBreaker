@@ -36,6 +36,9 @@ class Ball:
     
     def hit(self):
         self.yFac *= -1
+   
+    def hitSide(self):
+        self.xFac *= -1
 
     def hitPlatform(self, angle, side):
         self.yFac *= -1

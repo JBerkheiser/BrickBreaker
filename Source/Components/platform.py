@@ -3,10 +3,12 @@ import sys
 from config import width, height, platformWidth, platformHeight
 
 class Platform:
-    def __init__(self, posx, posy, speed, image):
+    def __init__(self, posx, posy, speed, image, width, height):
         self.posx, self.posy = posx, posy
         self.speed = speed
         self.image = image
+        self.width = width
+        self.height = height
 
         self.platformRect = pygame.Rect(self.posx, self.posy, platformWidth, platformHeight)
         self.platform = pygame.image.load(self.image)
