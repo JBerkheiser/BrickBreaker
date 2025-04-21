@@ -1,0 +1,7 @@
+Use decision table for breakout system as a whole and could do one for user interacting with it to see if they match up
+
+Condense it make sure theres not any conflicts
+
+say why you did not do certain methods
+
+use NLR for certain things

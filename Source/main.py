@@ -30,7 +30,7 @@ def main():
 
     ball = Ball((width / 2) - (ballWidth / 2), (height - platformHeight - ballHeight), "Images/Ball.gif", 3)
 
-    platform = Platform((width / 2) - (platformWidth / 2), height - platformHeight, 7, "Images/Platform.gif")
+    platform = Platform((width / 2) - (platformWidth / 2), height - platformHeight, 12, "Images/Platform.gif")
     platformXDir = 0
     
     horizontalGap, verticalGap = 20, 20
@@ -38,7 +38,6 @@ def main():
     
     while True:
         screen.fill(colorWhite)
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT: sys.exit()
             if event.type == pygame.KEYDOWN:
@@ -51,7 +50,24 @@ def main():
                     platformXDir = 0
 
         if(collisionCheck(platform.getRect(), ball.getRect())):
-            ball.hit()
+            paritionValue = platformWidth / 4
+            ballsCenter = ball.posx + (ballWidth / 2)
+
+            if(platform.posx <= ballsCenter and ballsCenter < platform.posx + paritionValue):
+                angle = 2
+                side = -1
+            elif(platform.posx <= ballsCenter + paritionValue and ballsCenter < platform.posx + (2 * paritionValue)):
+                angle = 1
+                side = -1
+            elif(platform.posx <= ballsCenter + (2 * paritionValue) and ballsCenter < platform.posx + (3 * paritionValue)):
+                angle = 1
+                side = 1
+            elif(platform.posx <= ballsCenter + (3 * paritionValue) and ballsCenter < platform.posx + (4 * paritionValue)):
+                angle = 2
+                side = 1
+
+            ball.hitPlatform(angle, side)
+            ball.increaseSpeed()
         for brick in listOfBricks:
             if(collisionCheck(brick.getRect(), ball.getRect())):
                 ball.hit()

@@ -13,7 +13,6 @@ class Platform:
 
     def update(self, xDir):
         self.posx += self.speed * xDir
-        print(self.posx)
         if self.posx <= 0:
             self.posx = 0
         elif self.posx + platformWidth >= width:
