@@ -36,45 +36,33 @@ def collisionCheck(object, ball):
     objTop = object.posy
     objBottom = object.posy + object.height
 
-    # Check for overlap
     if (ballRight >= objLeft and ballLeft <= objRight and ballBottom >= objTop and ballTop <= objBottom):
         if object.image == "Images/Platform.gif":
             if ballBottom >= objTop:
                 ball.posy = objTop - ballHeight
-                paritionValue = platformWidth / 4
+                platformCenter = object.posx + (platformWidth / 2)
                 ballsCenter = ball.posx + (ballWidth / 2)
 
-                if(object.posx <= ballsCenter and ballsCenter < object.posx + paritionValue):
-                    angle = 2
-                    side = -1
-                elif(object.posx <= ballsCenter + paritionValue and ballsCenter < object.posx + (2 * paritionValue)):
-                    angle = 1
-                    side = -1
-                elif(object.posx <= ballsCenter + (2 * paritionValue) and ballsCenter < object.posx + (3 * paritionValue)):
-                    angle = 1
-                    side = 1
-                elif(object.posx <= ballsCenter + (3 * paritionValue) and ballsCenter < object.posx + (4 * paritionValue)):
-                    angle = 2
-                    side = 1
+                offset = (ballsCenter - platformCenter) / (platformWidth / 3)
 
-                ball.hitPlatform(angle, side)
+                ball.hitPlatform(offset)
                 ball.increaseSpeed()
                 return True
             return False
+        else:
+            overlap_left = ballRight - objLeft
+            overlap_right = objRight - ballLeft
+            overlap_top = ballBottom - objTop
+            overlap_bottom = objBottom - ballTop
+            min_overlap = min(overlap_left, overlap_right, overlap_top, overlap_bottom)
 
-        overlap_left = ballRight - objLeft
-        overlap_right = objRight - ballLeft
-        overlap_top = ballBottom - objTop
-        overlap_bottom = objBottom - ballTop
-        min_overlap = min(overlap_left, overlap_right, overlap_top, overlap_bottom)
-
-        if min_overlap == overlap_top or min_overlap == overlap_bottom:
-            ball.hit()
-            return True
-        elif min_overlap == overlap_left or min_overlap == overlap_right:
-            ball.hitSide()
-            return True
-        return False
+            if min_overlap == overlap_top or min_overlap == overlap_bottom:
+                ball.hit()
+                return True
+            elif min_overlap == overlap_left or min_overlap == overlap_right:
+                ball.hitSide()
+                return True
+            return False
 
 def main():
     pygame.init()
@@ -97,6 +85,8 @@ def main():
         if(lastLevel != level):
             listOfBricks = populateBricks(level)
             lastLevel += 1
+            ball = Ball((width / 2) - (ballWidth / 2), (height - platformHeight - ballHeight), "Images/Ball.gif", 5)
+            platform = Platform((width / 2) - (platformWidth / 2), height - platformHeight, 12, "Images/Platform.gif", platformWidth, platformHeight)
 
         screen.fill(colorWhite)
         for event in pygame.event.get():
