@@ -26,43 +26,54 @@ def populateBricks(level):
 
     return listOfBricks
 
-def collisionCheck(object, ball):
+def checkPlatformCollision(platform, ball):
+    ballLeft = ball.posx
+    ballRight = ball.posx + ballWidth
+    ballBottom = ball.posy + ballHeight
+    platformLeft = platform.posx
+    platformRight = platform.posx + platform.width
+    platformTop = platform.posy
+
+    if (ballRight >= platformLeft and ballLeft <= platformRight and ballBottom >= platformTop):
+        ball.posy = platformTop - ballHeight
+        platformCenter = platform.posx + (platformWidth / 2)
+        ballsCenter = ball.posx + (ballWidth / 2)
+
+        offset = (ballsCenter - platformCenter) / (platformWidth / 3)
+
+        ball.hitPlatform(offset)
+        ball.increaseSpeed()
+
+def checkBrickCollision(brick, ball):
     ballLeft = ball.posx
     ballRight = ball.posx + ballWidth
     ballTop = ball.posy
     ballBottom = ball.posy + ballHeight
-    objLeft = object.posx
-    objRight = object.posx + object.width
-    objTop = object.posy
-    objBottom = object.posy + object.height
+    brickLeft = brick.posx
+    brickRight = brick.posx + brick.width
+    brickTop = brick.posy
+    brickBottom = brick.posy + brick.height
 
-    if (ballRight >= objLeft and ballLeft <= objRight and ballBottom >= objTop and ballTop <= objBottom):
-        if object.image == "Images/Platform.gif":
-            if ballBottom >= objTop:
-                ball.posy = objTop - ballHeight
-                platformCenter = object.posx + (platformWidth / 2)
-                ballsCenter = ball.posx + (ballWidth / 2)
-
-                offset = (ballsCenter - platformCenter) / (platformWidth / 3)
-
-                ball.hitPlatform(offset)
-                ball.increaseSpeed()
-                return True
-            return False
-        else:
-            overlap_left = ballRight - objLeft
-            overlap_right = objRight - ballLeft
-            overlap_top = ballBottom - objTop
-            overlap_bottom = objBottom - ballTop
-            min_overlap = min(overlap_left, overlap_right, overlap_top, overlap_bottom)
-
-            if min_overlap == overlap_top or min_overlap == overlap_bottom:
-                ball.hit()
-                return True
-            elif min_overlap == overlap_left or min_overlap == overlap_right:
-                ball.hitSide()
-                return True
-            return False
+    if (ballRight >= brickLeft and ballLeft <= brickRight and ballBottom >= brickTop and ballTop <= brickBottom):
+        overlapLeft = ballRight - brickLeft
+        overlapRight = brickRight - ballLeft
+        overlapTop = ballBottom - brickTop
+        overlapBottom = brickBottom - ballTop
+        minOverlap = min(overlapTop, overlapBottom, overlapLeft, overlapRight)
+        if minOverlap == overlapLeft:
+            ball.posx = brickLeft - ballWidth
+            ball.hitSide()
+        elif minOverlap == overlapRight:
+            ball.posx = brickRight
+            ball.hitSide()
+        elif minOverlap == overlapTop:
+            ball.posy = brickTop - ballHeight
+            ball.hit()
+        elif minOverlap == overlapBottom:
+            ball.posy = brickBottom
+            ball.hit()
+        return True
+    return False
 
 def main():
     pygame.init()
@@ -73,7 +84,7 @@ def main():
     clock = pygame.time.Clock()
     FPS = 30
 
-    ball = Ball((width / 2) - (ballWidth / 2), (height - platformHeight - ballHeight), "Images/Ball.gif", 3)
+    ball = Ball((width / 2) - (ballWidth / 2), (height - platformHeight - ballHeight), "Images/Ball.gif", 5)
 
     platform = Platform((width / 2) - (platformWidth / 2), height - platformHeight, 12, "Images/Platform.gif", platformWidth, platformHeight)
     platformXDir = 0
@@ -100,9 +111,9 @@ def main():
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     platformXDir = 0
 
-        collisionCheck(platform, ball)
+        checkPlatformCollision(platform, ball)
         for brick in listOfBricks:
-            if(collisionCheck(brick, ball)):
+            if(checkBrickCollision(brick, ball)):
                 brick.hit()
                 if brick.getDurability() <= 0:
                     listOfBricks.pop(listOfBricks.index(brick))

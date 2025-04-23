@@ -20,8 +20,10 @@ class Brick:
         self.durability -= 1
         if(self.durability == 2):
             self.image = "Images/Brick.gif"
+            self.brick = pygame.image.load(self.image)
         if(self.durability == 1):
             self.image = "Images/BrokenBrick.gif"
+            self.brick = pygame.image.load(self.image)
 
     def getRect(self):
         brickRect = self.brick.get_rect(topleft=(self.posx, self.posy))
