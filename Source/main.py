@@ -1,6 +1,6 @@
 import sys
 import pygame
-from config import colorWhite, screenSize, gameWidth, gameHeight, brickWidth, brickHeight, platformWidth, platformHeight, ballWidth, ballHeight, levels, bottomSpace, sideSpace
+from config import colorWhite, screenSize, gameWidth, gameHeight, brickWidth, brickHeight, platformWidth, platformHeight, ballWidth, ballHeight, levels, bottomSpace, sideSpace, livesTextLocation, levelTextLocation, scoreTextLocation, livesNumberLocation, levelNumberLocation, scoreNumberLocation, gameOverMessageLocation, gameWonMessageLocation
 from Components.ball import Ball
 from Components.brick import Brick
 from Components.platform import Platform
@@ -95,21 +95,85 @@ def main():
     FPS = 30
 
     platformXDir = 0
-    level = 0
-    lastLevel = 0
+    level = 1
+    score = 0
+    lives = 3
+    lastLevel = 1
+    lostLife = False
+    gameOver = False
+    gameWon = False
 
+    background = pygame.image.load("Images/Background.jpg")
+    border = pygame.image.load("Images/Border.gif")
     ball = Ball((gameWidth / 2) - (ballWidth / 2), (gameHeight - platformHeight - ballHeight), "Images/Ball.gif", 5)
     platform = Platform((gameWidth / 2) - (platformWidth / 2), gameHeight - platformHeight, 12, "Images/Platform.gif", platformWidth, platformHeight)
     listOfBricks = populateBricks(level)
+
+    font = pygame.font.Font('freesansbold.ttf', 32)
+    livesText = font.render('Lives:', True, (0, 0, 0), None)
+    livesTextRect = livesText.get_rect()
+    livesTextRect.center = livesTextLocation
+
+    levelText = font.render('Level:', True, (0, 0, 0), None)
+    levelTextRect = levelText.get_rect()
+    levelTextRect.center = levelTextLocation
+
+    scoreText = font.render('Score:', True, (0, 0, 0), None)
+    scoreTextRect = scoreText.get_rect()
+    scoreTextRect.center = scoreTextLocation
     
     while True:
+        livesNumber = font.render(str(lives), True, (0, 0, 0), None)
+        livesNumberRect = livesNumber.get_rect()
+        livesNumberRect.center = livesNumberLocation
+        levelNumber = font.render(str(level), True, (0, 0, 0), None)
+        levelNumberRect = levelNumber.get_rect()
+        levelNumberRect.center = levelNumberLocation
+        scoreNumber = font.render(str(score), True, (0, 0, 0), None)
+        scoreNumberRect = scoreNumber.get_rect()
+        scoreNumberRect.center = scoreNumberLocation
+
+        screen.fill((255, 255, 255))
+        if(gameOver):
+            screen.fill((255, 255, 255))
+            gameOverMessage = font.render("YOU LOSE", True, (0, 0, 0), None)
+            gameOverMessageRect = gameOverMessage.get_rect()
+            gameOverMessageRect.center = gameOverMessageLocation
+            screen.blit(gameOverMessage, gameOverMessageRect)
+            pygame.display.update()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+            continue
+
+        if(gameWon):
+            screen.fill((255, 255, 255))
+            gameWonMessage = font.render("YOU WIN", True, (0, 0, 0), None)
+            gameWonMessageRect = gameWonMessage.get_rect()
+            gameWonMessageRect.center = gameWonMessageLocation
+            screen.blit(gameWonMessage, gameWonMessageRect)
+            pygame.display.update()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+            continue
+
         if(lastLevel != level):
             listOfBricks = populateBricks(level)
             lastLevel += 1
             ball = Ball((gameWidth / 2) - (ballWidth / 2), (gameHeight - platformHeight - ballHeight), "Images/Ball.gif", 5)
             platform = Platform((gameWidth / 2) - (platformWidth / 2), gameHeight - platformHeight, 12, "Images/Platform.gif", platformWidth, platformHeight)
+            lives = 3
+        
+        if(lostLife):
+            lostLife = False
+            ball = Ball((gameWidth / 2) - (ballWidth / 2), (gameHeight - platformHeight - ballHeight), "Images/Ball.gif", 5)
+            platform = Platform((gameWidth / 2) - (platformWidth / 2), gameHeight - platformHeight, 12, "Images/Platform.gif", platformWidth, platformHeight)
 
-        screen.fill(colorWhite)
         for event in pygame.event.get():
             if event.type == pygame.QUIT: sys.exit()
             if event.type == pygame.KEYDOWN:
@@ -123,6 +187,10 @@ def main():
 
         checkPlatformCollision(platform, ball)
 
+        if(ball.posy + ballHeight >= gameHeight):
+            lives -= 1
+            if(lives <= 0): gameOver = True
+            else: lostLife = True
         
         numberOfRegularBricks = 0
         for brick in listOfBricks:
@@ -130,10 +198,22 @@ def main():
                 numberOfRegularBricks += 1
             if(checkBrickCollision(brick, ball)):
                 brick.hit()
+                score += 5
                 if brick.getDurability() <= 0:
                     listOfBricks.pop(listOfBricks.index(brick))
         if numberOfRegularBricks == 0:
+            if(level == 10):
+                gameWon = True
             level += 1
+
+        screen.blit(background, (0, 0))
+        screen.blit(border, (gameWidth, 0))
+        screen.blit(livesText, livesTextRect)
+        screen.blit(livesNumber, livesNumberRect)
+        screen.blit(levelText, levelTextRect)
+        screen.blit(levelNumber, levelNumberRect)
+        screen.blit(scoreText, scoreTextRect)
+        screen.blit(scoreNumber, scoreNumberRect)
         
         platform.update(platformXDir)
         ball.update()

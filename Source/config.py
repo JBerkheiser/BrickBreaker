@@ -1,4 +1,4 @@
-screenSize = screenWidth, screenHeight = 1000, 500
+screenSize = screenWidth, screenHeight = 980, 500
 size = gameWidth, gameHeight = 700, 500
 bottomSpace = 212
 sideSpace = 62
@@ -6,6 +6,16 @@ colorBlack = (0, 0, 0)
 colorWhite = (255, 255, 255)
 colorRed = (0, 255, 0)
 colorGreen = (255, 0, 0)
+
+# Text
+livesTextLocation = livesTextX, livesTextY = 840, 100
+levelTextLocation = levelTextX, levelTextY = 840, 225
+scoreTextLocation = scoreTextX, scoreTextY = 840, 350
+livesNumberLocation = livesNumberX, livesNumberY = 840, 150
+levelNumberLocation = levelNumberX, levelNumberY = 840, 275
+scoreNumberLocation = scoreNumberX, scoreNumberY = 840, 400
+gameOverMessageLocation = gameOverMessageX, gameOverMessageY = 350, 250
+gameWonMessageLocation = gameWonMessageX, gameWonMessageY = 350, 250
 
 # Ball
 ballWidth = 8
