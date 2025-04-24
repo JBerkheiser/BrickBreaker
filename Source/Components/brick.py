@@ -1,9 +1,10 @@
 import pygame
 import sys
-from config import width, height, brickRectOffset
+from config import brickRectOffset
 
 class Brick:
-    def __init__(self, posx, posy, image, durability, width, height):
+    def __init__(self, id, posx, posy, image, durability, width, height):
+        self.id = id
         self.posx, self.posy = posx, posy
         self.durability = durability
         self.image = image

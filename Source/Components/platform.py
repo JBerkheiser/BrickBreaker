@@ -1,6 +1,6 @@
 import pygame
 import sys
-from config import width, height, platformWidth, platformHeight
+from config import gameWidth, platformWidth, platformHeight
 
 class Platform:
     def __init__(self, posx, posy, speed, image, width, height):
@@ -17,8 +17,8 @@ class Platform:
         self.posx += self.speed * xDir
         if self.posx <= 0:
             self.posx = 0
-        elif self.posx + platformWidth >= width:
-            self.posx = width - platformWidth
+        elif self.posx + platformWidth >= gameWidth:
+            self.posx = gameWidth - platformWidth
         self.platformRect = pygame.Rect(self.posx, self.posy, platformWidth, platformHeight)
     
     def display(self, screen):

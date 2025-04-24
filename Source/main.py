@@ -1,6 +1,6 @@
 import sys
 import pygame
-from config import colorWhite, size, width, height, brickWidth, brickHeight, platformWidth, platformHeight, ballWidth, ballHeight, levels, bottomSpace, sideSpace
+from config import colorWhite, screenSize, gameWidth, gameHeight, brickWidth, brickHeight, platformWidth, platformHeight, ballWidth, ballHeight, levels, bottomSpace, sideSpace
 from Components.ball import Ball
 from Components.brick import Brick
 from Components.platform import Platform
@@ -17,12 +17,18 @@ def populateBricks(level):
             x = sideSpace + (colIndex * brickWidth)
             y = index * brickHeight
             if(char == '1'):
+                id = "brick"
                 image = "Images/BrokenBrick.gif"
                 durability = 1
             if(char == '2'):
+                id = "brick"
                 image = "Images/Brick.gif"
                 durability = 2
-            listOfBricks.append(Brick(x, y, image, durability, brickWidth, brickHeight))
+            if(char == '4'):
+                id = "metal"
+                image = "Images/MetalBrick.gif"
+                durability = 100
+            listOfBricks.append(Brick(id, x, y, image, durability, brickWidth, brickHeight))
 
     return listOfBricks
 
@@ -63,9 +69,13 @@ def checkBrickCollision(brick, ball):
         if minOverlap == overlapLeft:
             ball.posx = brickLeft - ballWidth
             ball.hitSide()
+            if(overlapBottom <= 5):
+                ball.hit()
         elif minOverlap == overlapRight:
             ball.posx = brickRight
             ball.hitSide()
+            if(overlapBottom <= 5):
+                ball.hit()
         elif minOverlap == overlapTop:
             ball.posy = brickTop - ballHeight
             ball.hit()
@@ -78,26 +88,26 @@ def checkBrickCollision(brick, ball):
 def main():
     pygame.init()
 
-    screen = pygame.display.set_mode(size)
+    screen = pygame.display.set_mode(screenSize)
     pygame.display.set_caption("Brick Breaker")
 
     clock = pygame.time.Clock()
     FPS = 30
 
-    ball = Ball((width / 2) - (ballWidth / 2), (height - platformHeight - ballHeight), "Images/Ball.gif", 5)
-
-    platform = Platform((width / 2) - (platformWidth / 2), height - platformHeight, 12, "Images/Platform.gif", platformWidth, platformHeight)
     platformXDir = 0
     level = 0
     lastLevel = 0
+
+    ball = Ball((gameWidth / 2) - (ballWidth / 2), (gameHeight - platformHeight - ballHeight), "Images/Ball.gif", 5)
+    platform = Platform((gameWidth / 2) - (platformWidth / 2), gameHeight - platformHeight, 12, "Images/Platform.gif", platformWidth, platformHeight)
     listOfBricks = populateBricks(level)
     
     while True:
         if(lastLevel != level):
             listOfBricks = populateBricks(level)
             lastLevel += 1
-            ball = Ball((width / 2) - (ballWidth / 2), (height - platformHeight - ballHeight), "Images/Ball.gif", 5)
-            platform = Platform((width / 2) - (platformWidth / 2), height - platformHeight, 12, "Images/Platform.gif", platformWidth, platformHeight)
+            ball = Ball((gameWidth / 2) - (ballWidth / 2), (gameHeight - platformHeight - ballHeight), "Images/Ball.gif", 5)
+            platform = Platform((gameWidth / 2) - (platformWidth / 2), gameHeight - platformHeight, 12, "Images/Platform.gif", platformWidth, platformHeight)
 
         screen.fill(colorWhite)
         for event in pygame.event.get():
@@ -112,13 +122,18 @@ def main():
                     platformXDir = 0
 
         checkPlatformCollision(platform, ball)
+
+        
+        numberOfRegularBricks = 0
         for brick in listOfBricks:
+            if(brick.id == "brick"):
+                numberOfRegularBricks += 1
             if(checkBrickCollision(brick, ball)):
                 brick.hit()
                 if brick.getDurability() <= 0:
                     listOfBricks.pop(listOfBricks.index(brick))
-                if len(listOfBricks) <= 0:
-                    level += 1
+        if numberOfRegularBricks == 0:
+            level += 1
         
         platform.update(platformXDir)
         ball.update()

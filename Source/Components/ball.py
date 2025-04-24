@@ -1,6 +1,6 @@
 import pygame
 import sys
-from config import width, height
+from config import gameWidth, gameHeight
 
 class Ball:
     def __init__(self, posx, posy, image, speed):
@@ -22,14 +22,14 @@ class Ball:
         if self.posx <= 0:
             self.posx = 0
             self.xFac *= -1
-        elif self.posx + self.ball.get_width() >= width:
-            self.posx = width - self.ball.get_width()
+        elif self.posx + self.ball.get_width() >= gameWidth:
+            self.posx = gameWidth - self.ball.get_width()
             self.xFac *= -1
         if self.posy <= 0:
             self.posy = 0
             self.yFac *= -1
-        elif self.posy + self.ball.get_height() >= height:
-            self.posy = height - self.ball.get_height()
+        elif self.posy + self.ball.get_height() >= gameHeight:
+            self.posy = gameHeight - self.ball.get_height()
             self.yFac *= -1
     
     def hit(self):
@@ -45,7 +45,7 @@ class Ball:
         elif(self.offset < 0): self.xFac = 1
     
     def increaseSpeed(self):
-        if(self.speed < 12):
+        if(self.speed < 10):
             self.speed += 1
 
     def getRect(self):
