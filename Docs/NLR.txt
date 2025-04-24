@@ -1,0 +1,23 @@
+The system shall display the users current score.
+The system shall display the users current number of lives.
+The system shall display the users current level.
+The system shall display the game environment.
+The system shall have 10 levels.
+
+The game environment shall display the current location of the platform.
+The game environment shall display the current level's brick configuration.
+The game environment shall display the current location of the ball.
+The game environment shall start in an initial state.
+The game environment shall return to initial state when the level increments.
+The game environment shall return the platform to an initial state when a life is lost.
+The game environment shall return the ball to an initial state when a life is lost.
+
+The level shall increment when the last non-metal brick breaks.  
+
+The lives shall decrement when the ball contacts the bottom barrier of the game environment.
+
+The score shall increase by five when the ball contacts a non-metal brick.
+
+The platform shall move left when the user presses the a or left keys.
+The platform shall move right when the user presses the d or right keys. 
+
